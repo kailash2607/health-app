@@ -30,6 +30,8 @@
     <textarea id="note" placeholder="Note (optional)"></textarea>
     <button class="submit" onclick="addReminder()">Add Reminder</button>
     <ul id="reminderList"></ul>
+    <!-- Next reminder countdown -->
+    <p id="nextReminder" class="countdown"></p>
   </div>
 
   <!-- BMI Calculator -->
@@ -40,6 +42,8 @@
     <input type="number" id="height" placeholder="Height (cm)">
     <button class="submit" onclick="calculateBMI()">Calculate BMI</button>
     <p class="bmi-result" id="bmiResult"></p>
+    <!-- BMI category icon -->
+    <div class="bmi-category-icon" id="bmiIcon"></div>
     <div class="progress-bar">
       <div class="progress-bar-inner" id="bmiProgress"></div>
     </div>
