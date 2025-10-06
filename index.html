@@ -1,30 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Health Reminder App</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f0f4f8;
+  }
+  header {
+    background-color: #28a745;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 15px;
+  }
+  header img.logo {
+    width: 50px;
+  }
+  header h1 {
+    font-size: 1.8em;
+    margin: 0;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 20px;
+  }
+  nav button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background-color: #ccc;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  nav button.active {
+    background-color: #28a745;
+    color: white;
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+    padding: 0 20px;
+  }
+  .card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    display: none;
+  }
+  .card.active { display: block; }
+  input, textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  button.submit {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.3s;
+  }
+  button.submit:hover { background-color: #218838; }
+  ul { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
+  li { display: flex; justify-content: space-between; align-items: center; padding: 6px; border-bottom: 1px solid #eee; transition: background 0.2s; }
+  li:hover { background-color: #f9f9f9; }
+  .li-buttons button { margin-left: 5px; padding: 5px 8px; font-size: 0.85em; border-radius:5px; color:white; border:none; cursor:pointer;}
+  .edit-btn { background:#ffc107; }
+  .delete-btn { background:#dc3545; }
+  .bmi-result {
+    font-weight: bold;
+    margin: 10px 0;
+    font-size: 1.1em;
+  }
+  .bmi-history { font-size: 0.9em; max-height: 150px; overflow-y: auto; margin-top: 10px; }
+  .bmi-history li { border-bottom: 1px solid #ddd; padding: 3px 0; }
+  .progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 5px;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    width: 0%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 20px;
+    border-radius: 10px;
+  }
+  .logo-img { width: 100%; margin-bottom: 10px; border-radius: 10px; }
+</style>
 </head>
 <body>
-  <h1>💊 Health Reminder App</h1>
 
-  <div class="container">
-    <label for="title">Reminder Title</label>
-    <input type="text" id="title" placeholder="e.g. Take Medicine" />
+<header>
+  <img class="logo" src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Health Logo">
+  <h1>Health Dashboard</h1>
+</header>
 
-    <label for="time">Select Time</label>
-    <input type="time" id="time" />
+<nav>
+  <button class="tab-btn active" onclick="showTab('reminderCard', this)">Reminders</button>
+  <button class="tab-btn" onclick="showTab('bmiCard', this)">BMI Calculator</button>
+</nav>
 
-    <label for="note">Notes</label>
-    <textarea id="note" rows="2" placeholder="e.g. After breakfast"></textarea>
+<div class="container">
 
-    <button onclick="addReminder()">Add Reminder</button>
-
-    <h3>Your Reminders</h3>
-    <div id="reminderList"></div>
+  <!-- Reminders -->
+  <div class="card active" id="reminderCard">
+    <img class="logo-img" src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Reminders">
+    <h2>Health Reminders</h2>
+    <input type="text" id="title" placeholder="Reminder Title">
+    <input type="time" id="time">
+    <textarea id="note" placeholder="Note (optional)"></textarea>
+    <button class="submit" onclick="addReminder()">Add Reminder</button>
+    <ul id="reminderList"></ul>
   </div>
 
-  <script src="script.js"></script>
+  <!-- BMI Calculator -->
+  <div class="card" id="bmiCard">
+    <img class="logo-img" src="https://cdn-icons-png.flaticon.com/512/833/833314.png" alt="BMI">
+    <h2>BMI Calculator</h2>
+    <input type="number" id="weight" placeholder="Weight (kg)">
+    <input type="number" id="height" placeholder="Height (cm)">
+    <button class="submit" onclick="calculateBMI()">Calculate BMI</button>
+    <p class="bmi-result" id="bmiResult"></p>
+    <div class="progress-bar">
+      <div class="progress-bar-inner" id="bmiProgress"></div>
+    </div>
+    <div class="bmi-history">
+      <h3>BMI History:</h3>
+      <ul id="bmiHistory"></ul>
+      <button class="submit" style="background-color:#dc3545;" onclick="clearBMIHistory()">Clear History</button>
+    </div>
+  </div>
+
+</div>
+
+<audio id="reminderSound" src="https://www.soundjay.com/button/beep-07.mp3" preload="auto"></audio>
+
+<script>
+  // ===== Tab Navigation =====
+  function showTab(cardId, btn) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(cardId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ===== Reminder App =====
+  const reminderList = document.getElementById("reminderList");
+  let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+
+  if ("Notification" in window && Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+
+  function addReminder() {
+    const title = document.getElementById("title").value.trim();
+    const time = document.getElementById("time").value;
+    const note = document.getElementById("note").value.trim();
+
+    if (!title || !time) { alert("Enter title and time!"); return; }
+
+    reminders.push({ title, time, note, notified:false });
+    saveReminders();
+    displayReminders();
+
+    document.getElementById("title").value = "";
+    document.getElementById("time").value = "";
+    document.getElementById("note").value = "";
+  }
+
+  function displayReminders() {
+    reminderList.innerHTML = "";
+    reminders.forEach((r, index) => {
+      const li = document.createElement("li");
+      li.innerHTML = `${r.time} - ${r.title}
+        <span class="li-buttons">
+          <button class="edit-btn" onclick="editReminder(${index})">Edit</button>
+          <button class="delete-btn" onclick="deleteReminder(${index})">Delete</button>
+        </span>`;
+      reminderList.appendChild(li);
+    });
+  }
+
+  function editReminder(index) {
+    const r = reminders[index];
+    const newTitle = prompt("Edit Title:", r.title);
+    const newTime = prompt("Edit Time (HH:MM):", r.time);
+    const newNote = prompt("Edit Note:", r.note);
+    if (newTitle && newTime) {
+      reminders[index] = { title:newTitle, time:newTime, note:newNote, notified:false };
+      saveReminders();
+      displayReminders();
+    }
+  }
+
+  function deleteReminder(index) {
+    reminders.splice(index,1);
+    saveReminders();
+    displayReminders();
+  }
+
+  function saveReminders() {
+    localStorage.setItem("reminders", JSON.stringify(reminders));
+  }
+
+  function checkReminders() {
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0,5);
+    reminders.forEach(r=>{
+      if(r.time===currentTime && !r.notified){
+        document.getElementById("reminderSound").play();
+        alert(`Reminder: ${r.title}\nNote: ${r.note}`);
+        if(Notification.permission==="granted") {
+          new Notification("Health Reminder",{body:`${r.title} - ${r.note}`, icon:"https://cdn-icons-png.flaticon.com/512/3103/3103446.png"});
+        }
+        r.notified=true;
+        saveReminders();
+      }
+    });
+  }
+
+  setInterval(checkReminders, 60000);
+  displayReminders();
+
+  // ===== BMI Calculator =====
+  const bmiHistoryList = document.getElementById("bmiHistory");
+  const bmiProgress = document.getElementById("bmiProgress");
+  let bmiHistory = JSON.parse(localStorage.getItem("bmiHistory")) || [];
+
+  function calculateBMI() {
+    const weight = parseFloat(document.getElementById("weight").value);
+    const height = parseFloat(document.getElementById("height").value)/100;
+    if(!weight||!height){ alert("Enter valid weight & height"); return; }
+
+    const bmi = (weight/(height*height)).toFixed(2);
+    let category="", color="";
+    if(bmi<18.5){ category="Underweight"; color="#17a2b8"; }
+    else if(bmi<24.9){ category="Normal"; color="#28a745"; }
+    else if(bmi<29.9){ category="Overweight"; color="#ffc107"; }
+    else { category="Obese"; color="#dc3545"; }
+
+    document.getElementById("bmiResult").innerText = `BMI: ${bmi} (${category})`;
+    bmiProgress.style.width = Math.min(bmi*3,100)+"%";
+    bmiProgress.style.backgroundColor = color;
+    bmiProgress.innerText = category;
+
+    const date = new Date().toLocaleString();
+    bmiHistory.push(`${date}: BMI ${bmi} (${category})`);
+    localStorage.setItem("bmiHistory", JSON.stringify(bmiHistory));
+    displayBMIHistory();
+  }
+
+  function displayBMIHistory(){
+    bmiHistoryList.innerHTML="";
+    bmiHistory.forEach(item=>{
+      const li=document.createElement("li");
+      li.textContent=item;
+      bmiHistoryList.appendChild(li);
+    });
+  }
+
+  function clearBMIHistory(){
+    if(confirm("Clear BMI history?")){
+      bmiHistory=[]; localStorage.removeItem("bmiHistory"); displayBMIHistory();
+    }
+  }
+
+  displayBMIHistory();
+</script>
+
 </body>
 </html>
