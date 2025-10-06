@@ -87,3 +87,44 @@ displayReminders();
 // ===== BMI Calculator =====
 const bmiHistoryList = document.getElementById("bmiHistory");
 const bmiProgress = document.getElementById("bmiProgress");
+let bmiHistory = JSON.parse(localStorage.getItem("bmiHistory")) || [];
+
+function calculateBMI() {
+  const weight = parseFloat(document.getElementById("weight").value);
+  const height = parseFloat(document.getElementById("height").value)/100;
+  if(!weight||!height){ alert("Enter valid weight & height"); return; }
+
+  const bmi = (weight/(height*height)).toFixed(2);
+  let category="", color="";
+  if(bmi<18.5){ category="Underweight"; color="#17a2b8"; }
+  else if(bmi<24.9){ category="Normal"; color="#28a745"; }
+  else if(bmi<29.9){ category="Overweight"; color="#ffc107"; }
+  else { category="Obese"; color="#dc3545"; }
+
+  document.getElementById("bmiResult").innerText = `BMI: ${bmi} (${category})`;
+  bmiProgress.style.width = Math.min(bmi*3,100)+"%";
+  bmiProgress.style.backgroundColor = color;
+  bmiProgress.innerText = category;
+
+  const date = new Date().toLocaleString();
+  bmiHistory.push(`${date}: BMI ${bmi} (${category})`);
+  localStorage.setItem("bmiHistory", JSON.stringify(bmiHistory));
+  displayBMIHistory();
+}
+
+function displayBMIHistory(){
+  bmiHistoryList.innerHTML="";
+  bmiHistory.forEach(item=>{
+    const li=document.createElement("li");
+    li.textContent=item;
+    bmiHistoryList.appendChild(li);
+  });
+}
+
+function clearBMIHistory(){
+  if(confirm("Clear BMI history?")){
+    bmiHistory=[]; localStorage.removeItem("bmiHistory"); displayBMIHistory();
+  }
+}
+
+displayBMIHistory();
